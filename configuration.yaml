@@ -1,0 +1,135 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: 54.6833
+  longitude: 25.3167
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 136
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Europe/Vilnius
+  # Customization file
+  customize: !include customize.yaml
+
+# Show links to resources in log and frontend
+#/MG/ introduction:
+
+mqtt:
+
+logger:
+  default: info
+#  logs:
+#    homeassistant.components.mqtt: debug
+
+# Enables the frontend
+frontend:
+
+# Enables configuration UI
+config:
+
+http:
+  # Secrets are defined in the file secrets.yaml
+  # api_password: !secret http_password
+  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+  # base_url: example.duckdns.org:8123
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  # include_used_components: true
+
+# Discover some devices automatically
+# discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+#conversation:
+
+# Enables support for tracking state changes over time
+history:
+    
+# View all events in a logbook
+#logbook:
+
+# Enables a map showing the location of tracked devices
+#map:
+
+# Track the sun
+sun:
+
+
+recorder:
+  purge_interval: 2
+  purge_keep_days: 5
+  exclude:
+    domains:
+      - automation  
+      - sun
+    entities:
+      - sensor.uptime
+
+
+
+
+
+
+sensor:
+  - platform: yr
+    monitored_conditions:
+      - temperature
+  - platform: uptime
+    unit_of_measurement: days 
+  - platform: dih_sensor
+    scan_interval: 600
+    sensors:
+      temp0:
+        friendly_name: "Dujų išeina"
+      temp1:
+        friendly_name: "Dujų ateina"
+      temp2:
+        friendly_name: "Malkų išeina"
+  - platform: mqtt
+    state_topic: 'home/dht1'
+    name: 'DHT Temp'
+    unit_of_measurement: '°C'
+    value_template: '{{ value_json.temperature }}'
+  - platform: mqtt
+    state_topic: 'home/dht1'
+    name: 'DHT Drėgmė'
+    unit_of_measurement: '%'
+    value_template: '{{ value_json.humidity }}'
+  - platform: systemmonitor
+    resources:
+      - type: processor_use
+  - platform: google_travel_time
+    api_key: AIzaSyDkcb1NuV1OdnNg3roGYwIxqJ71tHaRN7o
+    origin: Babinių+g.,+Vilnius+08428
+    destination: Gelvonų+g.+24,+Vilnius+07148
+
+
+switch:
+  - platform: dih_switch
+    switches:
+      backyard_light:
+        friendly_name: Kiemo
+#  - platform: command_line
+#    switches:
+#      garden_light:
+#        command_on:  '/home/homeassistant/lights_on.py'
+#        command_off: '/home/homeassistant/lights_off.py'
+#        friendly_name: Lauko sviestuvas
+
+
+# Text to speech
+#tts:
+#  - platform: google
+
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml

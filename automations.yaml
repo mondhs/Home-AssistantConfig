@@ -1,0 +1,19 @@
+  - alias: 'Turn off the lights when the sun rise'
+    hide_entity: True
+    trigger:
+      platform: sun
+      event: sunrise
+      offset: '-00:45:00'
+    action:
+      service: switch.turn_off
+      entity_id: switch.backyard_light
+  - alias: 'Turn on the lights when the sun set'
+    hide_entity: True
+    trigger:
+      platform: sun
+      event: sunset
+      offset: '00:45:00'
+    action:
+      service: switch.turn_on
+      entity_id: switch.backyard_light
+
