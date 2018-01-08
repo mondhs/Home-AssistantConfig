@@ -29,7 +29,6 @@ _LOGGER = logging.getLogger(__name__)
 # pylint: disable=unused-argument
 def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
     """Setup the sensor platform."""
-    #add_devices([DihSensor()])
     sensors = []
     sensor_handler = yield from hass.async_add_job(DIhHandler)
     
@@ -57,7 +56,7 @@ class DIhHandler:
 
     def __init__(self ):
         """Initialize the sensor handler."""
-        self.messageMap = dict([("temp0",0), ("temp1",0),("temp2",0)])
+        self.messageMap = dict([("temp0",0), ("temp1",0),("temp2",0), ("temp9",0)])
 
     @asyncio.coroutine
     def async_update(self, device_id):
@@ -76,7 +75,9 @@ class DIhHandler:
                     line.append(chr(c))
             msg = re.sub(r';temp.*$', "", "".join(line)).strip()
             #print(msg)
+            _LOGGER.error("DIhHandler update." + msg )
             newMessageMap = dict(item.split("=") for item in msg.split('\r\n'))
+            newMessageMap["temp9"]=float(newMessageMap["waterLevel"])/8
         _LOGGER.info("---DIhHandler update." + device_id + "; map: "+ str(newMessageMap))
         self.messageMap = newMessageMap
     
@@ -105,6 +106,8 @@ class DihSensor(Entity):
 
     @property
     def unit_of_measurement(self):
+        if self._device_id == "temp9":
+            return "%"
         """Return the unit of measurement."""
         return TEMP_CELSIUS
         
@@ -115,8 +118,6 @@ class DihSensor(Entity):
         This is the only method that should fetch new data for Home Assistant.
         """
         _LOGGER.info("+++async update. Device id: " + self._device_id)
-        #self._state = 23
-        #yield from self.hass.async_add_job(self._sensor_handler.update, self._device_id)
         yield from self._sensor_handler.async_update(self._device_id)
         try:
             if self._device_id in self._sensor_handler.messageMap:

@@ -16,4 +16,14 @@
     action:
       service: switch.turn_on
       entity_id: switch.backyard_light
+  - alias: 'notify water level'
+   hide_entry: True
+   trigger:
+     platform: numeric_state
+     entity_id: sensor.temp9
+     above: 50
+   action:
+     service: notify.pinamu
+     data:
+       message: "Vandens lygis: {{states.sensor.temp9.state}}%"
 

@@ -1,5 +1,4 @@
 *
-!*.py
 !*.yaml
 !scenes
 !.gitignore

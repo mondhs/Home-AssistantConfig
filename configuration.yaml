@@ -93,6 +93,8 @@ sensor:
         friendly_name: "Dujų ateina"
       temp2:
         friendly_name: "Malkų išeina"
+      temp9:
+        friendly_name: "Vanduo"
   - platform: mqtt
     state_topic: 'home/dht1'
     name: 'DHT Temp'
@@ -106,10 +108,6 @@ sensor:
   - platform: systemmonitor
     resources:
       - type: processor_use
-  - platform: google_travel_time
-    api_key: AIzaSyDkcb1NuV1OdnNg3roGYwIxqJ71tHaRN7o
-    origin: Babinių+g.,+Vilnius+08428
-    destination: Gelvonų+g.+24,+Vilnius+07148
 
 
 switch:
@@ -117,12 +115,29 @@ switch:
     switches:
       backyard_light:
         friendly_name: Kiemo
+  - platform: command_line
+    switches:
+      raspberry_pi:      
+        command_on:  'true'
+        command_off: 'sudo reboot'
+        command_state: 'true'
+        friendly_name: Restartuoti
+
 #  - platform: command_line
 #    switches:
 #      garden_light:
 #        command_on:  '/home/homeassistant/lights_on.py'
 #        command_off: '/home/homeassistant/lights_off.py'
 #        friendly_name: Lauko sviestuvas
+
+notify:
+  - name: pinamu
+    platform: twitter
+    consumer_key: !secret twitter_consumer_key 
+    consumer_secret: !secret twitter_consumer_secret 
+    access_token: !secret twitter_access_token
+    access_token_secret: !secret twitter_access_token_secret 
+    username: mondhs
 
 
 # Text to speech

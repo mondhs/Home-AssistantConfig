@@ -1,0 +1,23 @@
+  namai:
+    name: Namai
+    icon: mdi:home
+    entities:
+      - switch.backyard_light
+      - sensor.temp0
+      - sensor.temp1
+      - sensor.temp2
+      - sensor.temp9
+  visokie:
+    name: Visokie
+    entities:
+      - sensor.google_travel_time__driving
+      - sensor.yr_temperature
+      - sensor.dht_dregme
+      - sensor.dht_temp
+      - sun.sun
+  controls:
+    name: Controls
+    entities:
+      - switch.raspberry_pi
+      - sensor.uptime
+      - sensor.cpu_used
